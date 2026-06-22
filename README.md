@@ -102,3 +102,29 @@ El sitio sigue funcionando y se ve igual, pero las citas solo se guardan en
 el navegador de la persona que agenda (no las verás tú). Es útil para
 mostrar el sitio o probarlo, pero para recibir citas reales de tus clientes
 necesitas hacer el Paso 1.
+
+---
+
+## Sobre Alfred (el chatbot)
+
+Alfred es el asistente del sitio — un perrito mayordomo con moño de esmoquin
+que aparece como botón flotante. Responde preguntas básicas (horarios,
+servicios, ubicación, paquetes, cómo agendar) usando respuestas
+preprogramadas, **sin costo de API ni configuración adicional**. Si la
+pregunta es más compleja, invita a escribir por WhatsApp.
+
+Puedes editar sus respuestas en `src/lib/alfred.ts` — ahí están organizadas
+por palabras clave, fácil de ampliar.
+
+---
+
+## ¿Ya tenías Supabase configurado de antes?
+
+Si ya habías creado la tabla `appointments` con una versión anterior de este
+sitio (donde cada cita tenía una sola mascota), el formulario ahora envía un
+campo `pets` (una lista de mascotas) en vez de columnas sueltas como
+`pet_name`. Antes de volver a publicar, ve a Supabase → SQL Editor y corre de
+nuevo el archivo `supabase_schema.sql` — trae instrucciones de migración
+comentadas al final, o si no te importa perder las citas de prueba, lo más
+fácil es borrar la tabla vieja y crearla de nuevo (instrucciones arriba del
+archivo).

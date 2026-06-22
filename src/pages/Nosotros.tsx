@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Heart, Sparkles, MapPin, ArrowRight } from "lucide-react";
 import { BUSINESS } from "../lib/business";
+import PhotoPlaceholder from "../components/PhotoPlaceholder";
 
 export default function Nosotros() {
   return (
@@ -31,7 +32,13 @@ export default function Nosotros() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-3">
+        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <PhotoPlaceholder className="aspect-[4/3] rounded-2xl sm:col-span-1" />
+          <PhotoPlaceholder className="aspect-[4/3] rounded-2xl sm:col-span-1" />
+          <PhotoPlaceholder className="aspect-[4/3] rounded-2xl sm:col-span-1" />
+        </div>
+
+        <div className="mt-10 grid gap-6 sm:grid-cols-3">
           <div className="rounded-3xl bg-cream-soft p-7 text-center">
             <Heart className="mx-auto h-7 w-7 text-grape" />
             <h3 className="mt-4 font-display text-base font-bold text-ink">

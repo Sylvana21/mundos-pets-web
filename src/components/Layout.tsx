@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import WhatsAppFloat from "./WhatsAppFloat";
+import AlfredChat from "./AlfredChat";
 
 export default function Layout() {
   const location = useLocation();
@@ -20,7 +21,12 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
-      {!isAdmin && <WhatsAppFloat />}
+      {!isAdmin && (
+        <>
+          <WhatsAppFloat />
+          <AlfredChat />
+        </>
+      )}
     </div>
   );
 }

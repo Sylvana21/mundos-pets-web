@@ -5,9 +5,7 @@ export default function Ubicacion() {
   const mapsEmbedSrc = `https://www.google.com/maps?q=${encodeURIComponent(
     BUSINESS.address.mapsQuery
   )}&output=embed`;
-  const mapsLinkSrc = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    BUSINESS.address.mapsQuery
-  )}`;
+  const mapsLinkSrc = BUSINESS.address.mapsUrl;
 
   return (
     <div>

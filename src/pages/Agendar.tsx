@@ -1,8 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CheckCircle2, Loader2, MapPin, Truck, Car } from "lucide-react";
+import {
+  CheckCircle2,
+  Loader2,
+  MapPin,
+  Truck,
+  Car,
+  Plus,
+  Trash2,
+  PawPrint,
+} from "lucide-react";
 import { SERVICES, PACKAGES, BUSINESS } from "../lib/business";
-import { createAppointment } from "../lib/appointments";
+import { createAppointment, type PetEntry } from "../lib/appointments";
 import { getUpcomingDays, getDaySlots, formatSlot12h } from "../lib/availability";
 import ServiceIcon from "../components/ServiceIcon";
 
@@ -40,6 +49,25 @@ const PET_SIZES = [
   { id: "grande", label: "Grande" },
 ] as const;
 
+const SPECIES_OPTIONS = ["Perro", "Otro"];
+
+const ALL_SERVICE_OPTIONS = [
+  ...SERVICES.map((s) => ({ id: s.id, name: s.name })),
+  ...PACKAGES.map((p) => ({ id: p.id, name: p.name })),
+];
+
+function emptyPet(serviceId: string): PetEntry {
+  return {
+    pet_name: "",
+    pet_species: "Perro",
+    pet_breed: "",
+    pet_size: "mediano",
+    service_id: serviceId,
+    service_name:
+      ALL_SERVICE_OPTIONS.find((s) => s.id === serviceId)?.name ?? "",
+  };
+}
+
 export default function Agendar() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,9 +76,9 @@ export default function Agendar() {
     | undefined;
 
   const days = useMemo(() => getUpcomingDays(21), []);
+  const initialServiceId = incoming?.serviceId || incoming?.packageId || "";
 
-  const [serviceId, setServiceId] = useState(incoming?.serviceId ?? "");
-  const [packageId, setPackageId] = useState(incoming?.packageId ?? "");
+  const [pets, setPets] = useState<PetEntry[]>([emptyPet(initialServiceId)]);
   const [locationType, setLocationType] = useState<LocationType>("local");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -58,13 +86,10 @@ export default function Agendar() {
   const [ownerName, setOwnerName] = useState("");
   const [ownerPhone, setOwnerPhone] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
-  const [petName, setPetName] = useState("");
-  const [petSpecies, setPetSpecies] = useState("Perro");
-  const [petBreed, setPetBreed] = useState("");
-  const [petSize, setPetSize] = useState<"chico" | "mediano" | "grande">("mediano");
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
 
+  const [petPhotos, setPetPhotos] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -77,19 +102,35 @@ export default function Agendar() {
 
   const needsAddress = locationType === "movil" || locationType === "taxipet";
 
-  const selectedServiceName = serviceId
-    ? SERVICES.find((s) => s.id === serviceId)?.name
-    : packageId
-    ? PACKAGES.find((p) => p.id === packageId)?.name
-    : "";
+  function updatePet(index: number, patch: Partial<PetEntry>) {
+    setPets((prev) =>
+      prev.map((p, i) => (i === index ? { ...p, ...patch } : p))
+    );
+  }
+
+  function setPetService(index: number, serviceId: string) {
+    const name = ALL_SERVICE_OPTIONS.find((s) => s.id === serviceId)?.name ?? "";
+    updatePet(index, { service_id: serviceId, service_name: name });
+  }
+
+  function addPet() {
+    setPets((prev) => [...prev, emptyPet("")]);
+  }
+
+  function removePet(index: number) {
+    setPets((prev) => prev.filter((_, i) => i !== index));
+  }
 
   function validate(): string | null {
-    if (!serviceId && !packageId) return "Elige un servicio o paquete.";
+    if (pets.length === 0) return "Agrega al menos una mascota.";
+    for (const p of pets) {
+      if (!p.pet_name.trim()) return "Falta el nombre de alguna mascota.";
+      if (!p.service_id) return `Elige un servicio para ${p.pet_name || "tu mascota"}.`;
+    }
     if (!selectedDate) return "Elige una fecha.";
     if (!selectedTime) return "Elige un horario.";
     if (!ownerName.trim()) return "Falta tu nombre.";
     if (!ownerPhone.trim()) return "Falta tu teléfono.";
-    if (!petName.trim()) return "Falta el nombre de tu mascota.";
     if (needsAddress && !address.trim())
       return "Falta la dirección para el servicio a domicilio.";
     return null;
@@ -109,12 +150,11 @@ export default function Agendar() {
       owner_name: ownerName.trim(),
       owner_phone: ownerPhone.trim(),
       owner_email: ownerEmail.trim(),
-      pet_name: petName.trim(),
-      pet_species: petSpecies,
-      pet_breed: petBreed.trim(),
-      pet_size: petSize,
-      service_id: serviceId || packageId,
-      service_name: selectedServiceName || "",
+      pets: pets.map((p) => ({
+        ...p,
+        pet_name: p.pet_name.trim(),
+        pet_breed: p.pet_breed.trim(),
+      })),
       location_type: locationType,
       address: needsAddress ? address.trim() : null,
       date: selectedDate,
@@ -141,12 +181,14 @@ export default function Agendar() {
       day: "numeric",
       month: "long",
     });
+    const petsList = pets
+      .map((p) => `${p.pet_name} (${p.service_name})`)
+      .join(", ");
     const waText = encodeURIComponent(
       `¡Hola! Acabo de agendar una cita en la página:\n` +
-        `Servicio: ${selectedServiceName}\n` +
-        `Mascota: ${petName}\n` +
+        `Mascotas: ${petsList}\n` +
         `Fecha: ${dateLabel} a las ${formatSlot12h(selectedTime)}\n` +
-        `¿Me pueden confirmar? Gracias 🐾`
+        `¿Me pueden confirmar? Adjunto foto(s) de mi mascota para la cotización. Gracias 🐾`
     );
 
     return (
@@ -156,8 +198,7 @@ export default function Agendar() {
           ¡Cita registrada!
         </h1>
         <p className="mt-3 text-ink/65">
-          Agendamos a <strong>{petName}</strong> para{" "}
-          <strong>{selectedServiceName}</strong> el{" "}
+          Agendamos a <strong>{petsList}</strong> para el{" "}
           <strong>{dateLabel}</strong> a las{" "}
           <strong>{formatSlot12h(selectedTime)}</strong>.
         </p>
@@ -191,8 +232,11 @@ export default function Agendar() {
             Agenda tu cita
           </p>
           <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
-            Cuéntanos de tu peludo
+            Agenda tu cita
           </h1>
+          <p className="mt-2 text-sm text-cream/60">
+            ¿Tienes más de una mascota? Agrégalas todas. Te enviamos la cotización por WhatsApp según el pelaje y condición de cada una.
+          </p>
         </div>
       </section>
 
@@ -200,59 +244,166 @@ export default function Agendar() {
         onSubmit={handleSubmit}
         className="mx-auto max-w-3xl space-y-10 px-5 py-12"
       >
-        {/* 1. Servicio */}
+        {/* 1. Mascotas y servicios */}
         <fieldset>
           <legend className="font-display text-lg font-bold text-ink">
-            1. ¿Qué servicio necesitas?
+            1. Tus mascotas y su servicio
           </legend>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {SERVICES.map((s) => (
-              <button
-                type="button"
-                key={s.id}
-                onClick={() => {
-                  setServiceId(s.id);
-                  setPackageId("");
-                }}
-                className={`flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors ${
-                  serviceId === s.id
-                    ? "border-mint-deep bg-mint/10"
-                    : "border-ink/10 bg-white hover:border-ink/20"
-                }`}
+
+          <div className="mt-4 space-y-5">
+            {pets.map((pet, index) => (
+              <div
+                key={index}
+                className="rounded-2xl border border-ink/10 bg-white p-5"
               >
-                <ServiceIcon icon={s.icon} className="h-5 w-5 shrink-0 text-mint-deep" />
-                <span className="font-display text-sm font-bold text-ink">
-                  {s.name}
-                </span>
-              </button>
-            ))}
-            {PACKAGES.map((p) => (
-              <button
-                type="button"
-                key={p.id}
-                onClick={() => {
-                  setPackageId(p.id);
-                  setServiceId("");
-                }}
-                className={`flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors ${
-                  packageId === p.id
-                    ? "border-grape bg-grape/10"
-                    : "border-ink/10 bg-white hover:border-ink/20"
-                }`}
-              >
-                <span className="font-display text-sm font-bold text-ink">
-                  {p.name}
-                </span>
-              </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-ink/70">
+                    <PawPrint className="h-4 w-4 text-mint-deep" />
+                    <span className="font-display text-sm font-bold">
+                      Mascota {index + 1}
+                    </span>
+                  </div>
+                  {pets.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removePet(index)}
+                      className="text-ink/40 hover:text-red-500"
+                      aria-label="Quitar mascota"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="block font-display text-sm font-semibold text-ink">
+                      Nombre de tu mascota
+                    </label>
+                    <input
+                      value={pet.pet_name}
+                      onChange={(e) =>
+                        updatePet(index, { pet_name: e.target.value })
+                      }
+                      className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-display text-sm font-semibold text-ink">
+                      Especie
+                    </label>
+                    <select
+                      value={pet.pet_species}
+                      onChange={(e) =>
+                        updatePet(index, { pet_species: e.target.value })
+                      }
+                      className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30"
+                    >
+                      {SPECIES_OPTIONS.map((s) => (
+                        <option key={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block font-display text-sm font-semibold text-ink">
+                      Raza (si la conoces)
+                    </label>
+                    <input
+                      value={pet.pet_breed}
+                      onChange={(e) =>
+                        updatePet(index, { pet_breed: e.target.value })
+                      }
+                      className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-display text-sm font-semibold text-ink">
+                      Tamaño
+                    </label>
+                    <div className="mt-1.5 flex gap-2">
+                      {PET_SIZES.map((sz) => (
+                        <button
+                          type="button"
+                          key={sz.id}
+                          onClick={() => updatePet(index, { pet_size: sz.id })}
+                          className={`flex-1 rounded-xl border px-3 py-3 text-sm font-semibold transition-colors ${
+                            pet.pet_size === sz.id
+                              ? "border-mint-deep bg-mint/15 text-ink"
+                              : "border-ink/15 bg-white text-ink/60"
+                          }`}
+                        >
+                          {sz.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block font-display text-sm font-semibold text-ink">
+                    Servicio para {pet.pet_name || "esta mascota"}
+                  </label>
+                  <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                    {SERVICES.map((s) => (
+                      <button
+                        type="button"
+                        key={s.id}
+                        onClick={() => setPetService(index, s.id)}
+                        className={`flex items-center gap-2 rounded-xl border p-3 text-left transition-colors ${
+                          pet.service_id === s.id
+                            ? "border-mint-deep bg-mint/10"
+                            : "border-ink/10 bg-white hover:border-ink/20"
+                        }`}
+                      >
+                        <ServiceIcon
+                          icon={s.icon}
+                          className="h-4 w-4 shrink-0 text-mint-deep"
+                        />
+                        <span className="font-display text-xs font-bold text-ink">
+                          {s.name}
+                        </span>
+                      </button>
+                    ))}
+                    {PACKAGES.map((p) => (
+                      <button
+                        type="button"
+                        key={p.id}
+                        onClick={() => setPetService(index, p.id)}
+                        className={`flex items-center gap-2 rounded-xl border p-3 text-left transition-colors ${
+                          pet.service_id === p.id
+                            ? "border-grape bg-grape/10"
+                            : "border-ink/10 bg-white hover:border-ink/20"
+                        }`}
+                      >
+                        <span className="font-display text-xs font-bold text-ink">
+                          {p.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
+
+          <button
+            type="button"
+            onClick={addPet}
+            className="mt-4 inline-flex items-center gap-2 rounded-full border border-dashed border-ink/25 px-5 py-2.5 font-display text-sm font-bold text-ink/60 hover:border-mint-deep hover:text-mint-deep"
+          >
+            <Plus className="h-4 w-4" /> Agregar otra mascota
+          </button>
         </fieldset>
 
         {/* 2. Modalidad */}
         <fieldset>
           <legend className="font-display text-lg font-bold text-ink">
-            2. ¿Dónde lo atendemos?
+            2. ¿Dónde las atendemos?
           </legend>
+          <p className="mt-1 text-xs text-ink/45">
+            Aplica para todas las mascotas de esta cita.
+          </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             {LOCATION_OPTIONS.map((opt) => (
               <button
@@ -341,10 +492,10 @@ export default function Agendar() {
           )}
         </fieldset>
 
-        {/* 4. Datos del dueño y mascota */}
+        {/* 4. Datos del dueño */}
         <fieldset>
           <legend className="font-display text-lg font-bold text-ink">
-            4. Tus datos y los de tu mascota
+            4. Tus datos de contacto
           </legend>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
@@ -381,62 +532,43 @@ export default function Agendar() {
                 className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30"
               />
             </div>
-            <div>
-              <label className="block font-display text-sm font-semibold text-ink">
-                Nombre de tu mascota
-              </label>
-              <input
-                value={petName}
-                onChange={(e) => setPetName(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30"
-                required
-              />
-            </div>
-            <div>
-              <label className="block font-display text-sm font-semibold text-ink">
-                Especie
-              </label>
-              <select
-                value={petSpecies}
-                onChange={(e) => setPetSpecies(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30"
-              >
-                <option>Perro</option>
-                <option>Gato</option>
-                <option>Otro</option>
-              </select>
-            </div>
-            <div>
-              <label className="block font-display text-sm font-semibold text-ink">
-                Raza (si la conoces)
-              </label>
-              <input
-                value={petBreed}
-                onChange={(e) => setPetBreed(e.target.value)}
-                className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30"
-              />
-            </div>
-            <div>
-              <label className="block font-display text-sm font-semibold text-ink">
-                Tamaño
-              </label>
-              <div className="mt-1.5 flex gap-2">
-                {PET_SIZES.map((sz) => (
-                  <button
-                    type="button"
-                    key={sz.id}
-                    onClick={() => setPetSize(sz.id)}
-                    className={`flex-1 rounded-xl border px-3 py-3 text-sm font-semibold transition-colors ${
-                      petSize === sz.id
-                        ? "border-mint-deep bg-mint/15 text-ink"
-                        : "border-ink/15 bg-white text-ink/60"
-                    }`}
-                  >
-                    {sz.label}
-                  </button>
+          </div>
+
+          {/* Foto(s) de la mascota para cotización */}
+          <div className="mt-4 rounded-2xl border-2 border-dashed border-ink/15 bg-cream-soft p-5">
+            <label className="block font-display text-sm font-bold text-ink">
+              📷 Foto(s) de tu mascota
+            </label>
+            <p className="mt-1 text-xs text-ink/50">
+              Necesitamos ver el pelaje y condición de tu mascota para preparar tu cotización. Puedes subir varias fotos.
+            </p>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                if (e.target.files) {
+                  setPetPhotos(Array.from(e.target.files));
+                }
+              }}
+              className="mt-3 w-full cursor-pointer rounded-xl border border-ink/15 bg-white px-3 py-2.5 text-sm text-ink/60 file:mr-3 file:rounded-full file:border-0 file:bg-mint file:px-4 file:py-1.5 file:font-display file:text-xs file:font-bold file:text-ink hover:file:bg-lime"
+            />
+            {petPhotos.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {petPhotos.map((f, i) => (
+                  <div key={i} className="relative h-16 w-16 overflow-hidden rounded-xl border border-ink/10">
+                    <img
+                      src={URL.createObjectURL(f)}
+                      alt={`Foto ${i + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
                 ))}
+                <p className="w-full text-xs text-mint-deep font-semibold mt-1">
+                  {petPhotos.length} foto{petPhotos.length > 1 ? "s" : ""} lista{petPhotos.length > 1 ? "s" : ""}
+                </p>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="mt-4">

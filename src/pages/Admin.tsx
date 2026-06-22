@@ -149,20 +149,25 @@ export default function Admin() {
               className="rounded-2xl border border-ink/5 bg-white p-5 shadow-sm"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <PawPrint className="h-4 w-4 text-mint-deep" />
-                    <p className="font-display text-base font-bold text-ink">
-                      {a.pet_name}{" "}
-                      <span className="font-normal text-ink/50">
-                        ({a.pet_species}{a.pet_breed ? `, ${a.pet_breed}` : ""}, {a.pet_size})
-                      </span>
-                    </p>
+                <div className="flex-1">
+                  <div className="space-y-1.5">
+                    {a.pets.map((pet, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <PawPrint className="h-4 w-4 shrink-0 text-mint-deep" />
+                        <p className="font-display text-base font-bold text-ink">
+                          {pet.pet_name}{" "}
+                          <span className="font-normal text-ink/50">
+                            ({pet.pet_species}
+                            {pet.pet_breed ? `, ${pet.pet_breed}` : ""}, {pet.pet_size})
+                          </span>
+                          <span className="ml-2 font-display text-sm font-semibold text-grape">
+                            {pet.service_name}
+                          </span>
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                  <p className="mt-1 text-sm font-semibold text-grape">
-                    {a.service_name}
-                  </p>
-                  <p className="text-sm text-ink/60">
+                  <p className="mt-1.5 text-sm text-ink/60">
                     {dateLabel} · {formatSlot12h(a.time)} ·{" "}
                     {a.location_type === "local"
                       ? "En el local"

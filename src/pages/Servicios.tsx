@@ -22,8 +22,8 @@ export default function Servicios() {
             Cuidado a la medida de tu mascota
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-cream/70">
-            Los precios varían según tamaño y raza de tu mascota. Te
-            confirmamos el costo exacto al agendar o por WhatsApp.
+            La cotización es personalizada según el tamaño, raza, pelaje y
+            condición de tu mascota — te la enviamos por WhatsApp al agendar.
           </p>
         </div>
       </section>
@@ -53,8 +53,8 @@ export default function Servicios() {
               </p>
 
               <div className="mt-6 flex items-center justify-between border-t border-ink/5 pt-5">
-                <span className="font-display text-base font-bold text-grape">
-                  {s.priceFrom !== null ? `Desde $${s.priceFrom} MXN` : "Consultar"}
+                <span className="text-sm text-ink/50 italic">
+                  Cotización por WhatsApp al agendar
                 </span>
                 <Link
                   to="/agendar"

@@ -82,8 +82,8 @@ export default function Home() {
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-ink/65">
               Visítanos en nuestro local en San Gaspar Tlahuelilpan para baño,
-              corte, spa o báñalo tú mismo. Si no puedes trasladar a tu
-              mascota, pide <strong>TaxiPet</strong> y nosotros vamos por ella.
+              corte o spa. Si no puedes trasladar a tu mascota, pide{" "}
+              <strong>TaxiPet</strong> y nosotros vamos por ella.
             </p>
           </div>
           <div className="rounded-3xl border border-ink/5 bg-white p-8 shadow-sm">
@@ -138,14 +138,39 @@ export default function Home() {
                 <p className="mt-1.5 text-sm leading-relaxed text-ink/60">
                   {s.shortDescription}
                 </p>
-                {s.priceFrom !== null && (
-                  <p className="mt-3 font-display text-sm font-bold text-grape">
-                    Desde ${s.priceFrom} MXN
-                  </p>
-                )}
+
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* GALERÍA */}
+      <section className="mx-auto max-w-6xl px-5 py-16">
+        <div className="mb-10 text-center">
+          <p className="font-display text-sm font-bold uppercase tracking-wider text-mint-deep">
+            Nuestros clientes
+          </p>
+          <h2 className="mt-2 font-display text-3xl font-extrabold text-ink">
+            Peludos felices, dueños tranquilos
+          </h2>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {[
+            { src: "/images/gallery/perro1.jpg", alt: "Pomerania en la estética móvil" },
+            { src: "/images/gallery/perro2.jpg", alt: "Goldendoodle recién bañado" },
+            { src: "/images/gallery/perro3.jpg", alt: "Familia de Pomeranias con paliacate" },
+            { src: "/images/gallery/perro4.jpg", alt: "Corgi y Shih Tzu en Mundogs" },
+            { src: "/images/gallery/perro5.jpg", alt: "Corgi cowboy en Mundogs" },
+          ].map((photo) => (
+            <div key={photo.src} className="group relative overflow-hidden rounded-2xl aspect-square">
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+          ))}
         </div>
       </section>
 

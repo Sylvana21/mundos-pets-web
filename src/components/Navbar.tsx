@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Home } from "lucide-react";
 import { BUSINESS } from "../lib/business";
 
 const LINKS = [
+  { to: "/", label: "Inicio" },
   { to: "/servicios", label: "Servicios" },
   { to: "/paquetes", label: "Paquetes" },
   { to: "/ubicacion", label: "Ubicación" },
@@ -42,7 +43,19 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {LINKS.map((link) => (
+          <NavLink
+            to="/"
+            end
+            aria-label="Ir al inicio"
+            className={({ isActive }) =>
+              `transition-colors ${
+                isActive ? "text-mint" : "text-cream/80 hover:text-mint"
+              }`
+            }
+          >
+            <Home className="h-5 w-5" />
+          </NavLink>
+          {LINKS.filter((l) => l.to !== "/").map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -80,6 +93,7 @@ export default function Navbar() {
               <NavLink
                 key={link.to}
                 to={link.to}
+                end={link.to === "/"}
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
                   `rounded-lg px-3 py-3 font-display text-base font-semibold ${

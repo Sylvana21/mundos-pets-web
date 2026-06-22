@@ -1,15 +1,19 @@
 import { supabase, supabaseConfigured } from "./supabase";
 
-export type AppointmentInput = {
-  owner_name: string;
-  owner_phone: string;
-  owner_email: string;
+export type PetEntry = {
   pet_name: string;
-  pet_species: string;
+  pet_species: string; // "Perro" | "Otro"
   pet_breed: string;
   pet_size: "chico" | "mediano" | "grande";
   service_id: string;
   service_name: string;
+};
+
+export type AppointmentInput = {
+  owner_name: string;
+  owner_phone: string;
+  owner_email: string;
+  pets: PetEntry[];
   location_type: "local" | "movil" | "taxipet";
   address: string | null;
   date: string; // YYYY-MM-DD
