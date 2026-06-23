@@ -1,14 +1,8 @@
+import DogDeco from "../components/DogDeco";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { SERVICES } from "../lib/business";
 import ServiceIcon from "../components/ServiceIcon";
-
-const LOCATION_LABEL: Record<string, string> = {
-  local: "En el local",
-  movil: "A domicilio (camioneta)",
-  "domicilio-taxipet": "Recogemos y regresamos",
-  cliente: "Donde tú elijas",
-};
 
 export default function Servicios() {
   return (
@@ -28,6 +22,11 @@ export default function Servicios() {
         </div>
       </section>
 
+      {/* Perrito decorativo */}
+      <div className="flex justify-end max-w-6xl mx-auto px-5 -mb-6">
+        <DogDeco variant="sniffing" className="h-16 w-16 text-mint/25" />
+      </div>
+
       <section className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-6 sm:grid-cols-2">
           {SERVICES.map((s) => (
@@ -39,10 +38,11 @@ export default function Servicios() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-mint/20 text-mint-deep">
                   <ServiceIcon icon={s.icon} className="h-6 w-6" />
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-ink/5 px-3 py-1 text-xs font-semibold text-ink/60">
-                  <MapPin className="h-3 w-3" />
-                  {LOCATION_LABEL[s.location]}
-                </span>
+                {s.location === "domicilio-taxipet" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-ink/5 px-3 py-1 text-xs font-semibold text-ink/60">
+                    Recogemos y regresamos
+                  </span>
+                )}
               </div>
 
               <h2 className="mt-5 font-display text-xl font-bold text-ink">

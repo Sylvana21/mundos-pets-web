@@ -69,13 +69,13 @@ const RULES: Rule[] = [
   {
     keywords: ["taxipet", "taxi pet", "recoger", "recogen", "trasladar"],
     reply: () => ({
-      text: `TaxiPet es nuestro servicio de traslado: vamos por tu mascota a tu domicilio, la llevamos al local para su servicio y, si quieres, también la regresamos a casa. El servicio en sí (baño, corte, spa) siempre se hace en el local.`,
+      text: `TaxiPet es un servicio de traslado: vamos por tu mascota a tu domicilio, la llevamos al local para su servicio y, si quieres, la regresamos a casa al terminar. Puedes seleccionarlo al agendar tu cita junto con el servicio de baño, corte o spa.`,
     }),
   },
   {
-    keywords: ["agendar", "cita", "reservar", "apartar"],
+    keywords: ["agendar", "cita", "reservar", "apartar", "disponible", "horario"],
     reply: () => ({
-      text: `¡Con gusto! Puedes agendar directo desde el botón "Agendar cita" en la parte de arriba de la página. Ahí eliges el servicio, la modalidad, fecha y hora.`,
+      text: `¡Con gusto! Puedes agendar desde el botón "Agendar cita" arriba. Elige los servicios para cada mascota, la modalidad (local o estética móvil), fecha y hora. Puedes agregar varias mascotas en una sola cita y subir fotos para la cotización.`,
     }),
   },
   {

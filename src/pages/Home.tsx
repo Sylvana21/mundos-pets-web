@@ -3,6 +3,7 @@ import { ArrowRight, MapPin, Star } from "lucide-react";
 import { BUSINESS, SERVICES } from "../lib/business";
 import ServiceIcon from "../components/ServiceIcon";
 import Paw from "../components/Paw";
+import DogDeco from "../components/DogDeco";
 
 export default function Home() {
   return (
@@ -46,7 +47,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex justify-center md:justify-end">
+          <div className="relative flex justify-center md:justify-end">
             <div className="relative">
               <div
                 className="absolute inset-0 -z-10 rounded-full blur-2xl"
@@ -58,6 +59,7 @@ export default function Home() {
                 className="h-64 w-64 object-contain drop-shadow-2xl sm:h-80 sm:w-80"
               />
             </div>
+            <DogDeco variant="running" className="absolute -bottom-4 -left-8 h-20 w-24 text-mint/20 rotate-12" />
           </div>
         </div>
       </section>

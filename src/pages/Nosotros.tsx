@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Heart, Sparkles, MapPin, ArrowRight } from "lucide-react";
 import { BUSINESS } from "../lib/business";
-import PhotoPlaceholder from "../components/PhotoPlaceholder";
+import DogDeco from "../components/DogDeco";
 
 export default function Nosotros() {
   return (
@@ -32,13 +32,22 @@ export default function Nosotros() {
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <PhotoPlaceholder className="aspect-[4/3] rounded-2xl sm:col-span-1" />
-          <PhotoPlaceholder className="aspect-[4/3] rounded-2xl sm:col-span-1" />
-          <PhotoPlaceholder className="aspect-[4/3] rounded-2xl sm:col-span-1" />
+        <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {[
+            "/images/gallery/perro4.jpg",
+            "/images/gallery/perro3.jpg",
+            "/images/gallery/perro5.jpg",
+          ].map((src, i) => (
+            <div key={i} className="group relative overflow-hidden rounded-2xl aspect-[4/3]">
+              <img src={src} alt="Cliente de Mundogs & Pets" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+          ))}
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-3">
+        <div className="flex justify-center mt-6 opacity-20">
+          <DogDeco variant="sitting" className="h-16 w-12 text-ink" />
+        </div>
+        <div className="mt-6 grid gap-6 sm:grid-cols-3">
           <div className="rounded-3xl bg-cream-soft p-7 text-center">
             <Heart className="mx-auto h-7 w-7 text-grape" />
             <h3 className="mt-4 font-display text-base font-bold text-ink">

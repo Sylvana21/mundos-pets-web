@@ -1,35 +1,60 @@
-type AlfredIconProps = {
-  className?: string;
-};
+type AlfredIconProps = { className?: string };
 
 export default function AlfredIcon({ className = "" }: AlfredIconProps) {
   return (
-    <svg viewBox="0 0 100 100" className={className} aria-hidden="true">
-      {/* Cabeza */}
-      <circle cx="50" cy="46" r="30" fill="#F2E4C9" />
-      {/* Orejas caídas */}
-      <ellipse cx="20" cy="42" rx="9" ry="16" fill="#C9A876" transform="rotate(-15 20 42)" />
-      <ellipse cx="80" cy="42" rx="9" ry="16" fill="#C9A876" transform="rotate(15 80 42)" />
-      {/* Mancha en el ojo */}
-      <ellipse cx="32" cy="44" rx="11" ry="13" fill="#C9A876" />
-      {/* Ojos */}
-      <circle cx="33" cy="46" r="3.4" fill="#1A1A1A" />
-      <circle cx="64" cy="46" r="3.4" fill="#1A1A1A" />
-      <circle cx="34.2" cy="44.8" r="1" fill="#fff" />
-      <circle cx="65.2" cy="44.8" r="1" fill="#fff" />
+    <svg viewBox="0 0 100 110" className={className} aria-hidden="true">
+      {/* === CUERPO / TRAJE === */}
+      <rect x="28" y="72" width="44" height="32" rx="10" fill="#1A1A1A" />
+      {/* Camisa blanca */}
+      <path d="M50 74 L40 86 L50 90 L60 86 Z" fill="white" />
+      {/* Solapa izquierda del saco */}
+      <path d="M50 74 L28 74 L28 90 L40 86 Z" fill="#1A1A1A" />
+      {/* Solapa derecha del saco */}
+      <path d="M50 74 L72 74 L72 90 L60 86 Z" fill="#1A1A1A" />
+      {/* Moño / pajarita */}
+      <path d="M50 83 L41 78 L41 88 Z" fill="#8FD4C1" />
+      <path d="M50 83 L59 78 L59 88 Z" fill="#8FD4C1" />
+      <circle cx="50" cy="83" r="3.5" fill="#5fae9b" />
+
+      {/* === CABEZA === */}
+      <circle cx="50" cy="46" r="26" fill="#F5DEB3" />
+
+      {/* Manchas de color (tipo beagle/spaniel) */}
+      <ellipse cx="34" cy="44" rx="10" ry="12" fill="#C8975A" opacity="0.7" />
+      <ellipse cx="62" cy="38" rx="7" ry="8" fill="#C8975A" opacity="0.5" />
+
+      {/* Orejas largas caídas — tipo mayordomo elegante */}
+      <ellipse cx="24" cy="48" rx="8" ry="18" fill="#C8975A" transform="rotate(-8 24 48)" />
+      <ellipse cx="76" cy="48" rx="8" ry="18" fill="#C8975A" transform="rotate(8 76 48)" />
+      {/* Interior orejas */}
+      <ellipse cx="24" cy="50" rx="4.5" ry="12" fill="#E8B07A" opacity="0.6" transform="rotate(-8 24 50)" />
+      <ellipse cx="76" cy="50" rx="4.5" ry="12" fill="#E8B07A" opacity="0.6" transform="rotate(8 76 50)" />
+
+      {/* Cejas arqueadas — expresión inteligente */}
+      <path d="M34 30 Q40 26 44 30" fill="none" stroke="#6B4226" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M56 30 Q60 26 66 30" fill="none" stroke="#6B4226" strokeWidth="2.5" strokeLinecap="round" />
+
+      {/* Ojos expresivos */}
+      <circle cx="38" cy="44" r="5.5" fill="white" />
+      <circle cx="62" cy="44" r="5.5" fill="white" />
+      <circle cx="39" cy="45" r="3.5" fill="#3D2B1F" />
+      <circle cx="63" cy="45" r="3.5" fill="#3D2B1F" />
+      {/* Brillo */}
+      <circle cx="40.5" cy="43.5" r="1.2" fill="white" />
+      <circle cx="64.5" cy="43.5" r="1.2" fill="white" />
+
       {/* Hocico */}
-      <ellipse cx="50" cy="60" rx="13" ry="9" fill="#FBF6EA" />
-      <ellipse cx="50" cy="55" r="3.2" fill="#1A1A1A" />
-      <path d="M50 58 v4" stroke="#1A1A1A" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M44 64 q6 4 12 0" stroke="#1A1A1A" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      {/* Cuello / cuerpo */}
-      <rect x="32" y="72" width="36" height="20" rx="8" fill="#F2E4C9" />
-      {/* Moño de esmoquin (pajarita) */}
-      <path d="M50 80 L38 74 V86 Z" fill="#161616" />
-      <path d="M50 80 L62 74 V86 Z" fill="#161616" />
-      <circle cx="50" cy="80" r="3.5" fill="#8FD4C1" />
-      {/* Cuello blanco de camisa */}
-      <path d="M40 72 L50 80 L60 72" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <ellipse cx="50" cy="56" rx="10" ry="7" fill="#F0C898" />
+      {/* Nariz */}
+      <ellipse cx="50" cy="52" rx="4" ry="3" fill="#3D2B1F" />
+      <ellipse cx="49" cy="51.5" rx="1.2" ry="0.8" fill="white" opacity="0.5" />
+      {/* Sonrisa */}
+      <path d="M43 58 Q50 63 57 58" fill="none" stroke="#B07040" strokeWidth="1.8" strokeLinecap="round" />
+      {/* Bigotes */}
+      <line x1="28" y1="55" x2="40" y2="57" stroke="#6B4226" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+      <line x1="28" y1="59" x2="40" y2="59" stroke="#6B4226" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+      <line x1="60" y1="57" x2="72" y2="55" stroke="#6B4226" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+      <line x1="60" y1="59" x2="72" y2="59" stroke="#6B4226" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
     </svg>
   );
 }

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { PACKAGES, BUSINESS } from "../lib/business";
 import Paw from "../components/Paw";
+import DogDeco from "../components/DogDeco";
 
 export default function Paquetes() {
   return (
@@ -152,8 +153,11 @@ export default function Paquetes() {
           </div>
         </div>
 
-        {/* Nota cotización */}
-        <div className="mt-10 flex items-start gap-3 rounded-2xl bg-cream-soft p-6 text-sm leading-relaxed text-ink/70">
+        {/* Perrito deco + Nota cotización */}
+        <div className="flex justify-end -mb-2 pr-4">
+          <DogDeco variant="sitting" className="h-14 w-12 text-grape/20" />
+        </div>
+        <div className="mt-2 flex items-start gap-3 rounded-2xl bg-cream-soft p-6 text-sm leading-relaxed text-ink/70">
           <Paw className="mt-0.5 h-5 w-5 shrink-0 text-mint-deep" />
           <p>
             <strong className="text-ink">¿Cuánto cuesta?</strong>{" "}
