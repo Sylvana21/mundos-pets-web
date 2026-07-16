@@ -121,10 +121,18 @@ function SuccessScreen({
 
       {/* Botón WhatsApp obligatorio y prominente */}
       <div className="mt-6 w-full">
+        {/* Fecha prominente justo arriba del botón */}
+        <div className="mb-3 rounded-2xl bg-ink px-5 py-3 text-center">
+          <p className="text-xs text-cream/50 uppercase tracking-wide font-display font-bold">Tu cita</p>
+          <p className="font-display text-lg font-extrabold text-mint mt-0.5">
+            {dateLabel}
+          </p>
+          <p className="text-sm text-cream/70">a las {formatSlot12h(selectedTime)}</p>
+        </div>
         <div className="mb-2 flex items-center justify-center gap-2">
           <span className="animate-bounce text-lg">👆</span>
           <p className="font-display text-sm font-bold text-grape">
-            ¡No olvides confirmar tu cita!
+            ¡No se te olvide confirmar tu cita!
           </p>
           <span className="animate-bounce text-lg">👆</span>
         </div>

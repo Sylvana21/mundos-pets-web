@@ -25,7 +25,7 @@ export default function Paquetes() {
 
       {/* PAQUETES */}
       <section className="mx-auto max-w-5xl px-5 py-14">
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3 items-start">
           {/* PAQUETE TRADICIONAL */}
           <div className="relative overflow-hidden rounded-3xl bg-ink text-cream shadow-xl">
             {/* Fondo decorativo */}
@@ -81,6 +81,22 @@ export default function Paquetes() {
                 >
                   Agendar <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* FOTO decorativa entre paquetes */}
+          <div className="hidden md:flex items-center justify-center">
+            <div className="relative">
+              <div className="h-52 w-52 overflow-hidden rounded-full border-4 border-mint/30 shadow-xl">
+                <img
+                  src="/images/gallery/perro1.jpg"
+                  alt="Perrito feliz en Mundogs & Pets"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-ink px-4 py-1.5 font-display text-xs font-bold text-mint whitespace-nowrap shadow">
+                ¡Peludo feliz! 🐾
               </div>
             </div>
           </div>

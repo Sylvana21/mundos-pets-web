@@ -58,8 +58,14 @@ export function getUpcomingDays(count = 21) {
   for (let i = 0; i < count; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const label = d.toLocaleDateString("es-MX", {
+    // Usar fecha local explícita para evitar desfase de zona horaria UTC
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const dateStr = `${year}-${month}-${day}`;
+    // Parsear con parseDateLocal para que el día de semana sea correcto
+    const local = parseDateLocal(dateStr);
+    const label = local.toLocaleDateString("es-MX", {
       weekday: "short",
       day: "numeric",
       month: "short",
