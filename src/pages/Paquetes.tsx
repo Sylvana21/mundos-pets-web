@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { PACKAGES, BUSINESS } from "../lib/business";
 import Paw from "../components/Paw";
-import DogDeco from "../components/DogDeco";
 
 export default function Paquetes() {
   return (
@@ -86,7 +85,7 @@ export default function Paquetes() {
           </div>
 
           {/* FOTO decorativa entre paquetes */}
-          <div className="hidden md:flex items-center justify-center">
+          <div className="flex items-center justify-center py-6 md:py-0">
             <div className="relative">
               <div className="h-52 w-52 overflow-hidden rounded-full border-4 border-mint/30 shadow-xl">
                 <img
@@ -169,26 +168,7 @@ export default function Paquetes() {
           </div>
         </div>
 
-        {/* Foto perrito */}
-        <div className="mt-10 overflow-hidden rounded-3xl shadow-md">
-          <div className="relative h-56 sm:h-72">
-            <img
-              src="/images/gallery/perro1.jpg"
-              alt="Pomerania en la estética Mundogs & Pets"
-              className="h-full w-full object-cover object-top"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
-            <p className="absolute bottom-5 left-6 font-display text-xl font-extrabold text-cream drop-shadow">
-              Peludo feliz, dueño tranquilo 🐾
-            </p>
-          </div>
-        </div>
-
-        {/* Perrito deco + Nota cotización */}
-        <div className="flex justify-end -mb-2 pr-4">
-          <DogDeco variant="sitting" className="h-14 w-12 text-grape/20" />
-        </div>
-        <div className="mt-2 flex items-start gap-3 rounded-2xl bg-cream-soft p-6 text-sm leading-relaxed text-ink/70">
+        <div className="mt-8 flex items-start gap-3 rounded-2xl bg-cream-soft p-6 text-sm leading-relaxed text-ink/70">
           <Paw className="mt-0.5 h-5 w-5 shrink-0 text-mint-deep" />
           <p>
             <strong className="text-ink">¿Cuánto cuesta?</strong>{" "}

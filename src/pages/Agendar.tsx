@@ -173,6 +173,7 @@ export default function Agendar() {
     service_ids: initialServiceId ? [initialServiceId] : [],
   }]);
   const [locationType, setLocationType] = useState<LocationType>("local");
+  const [taxipetOption, setTaxipetOption] = useState<"recoger" | "regresar" | "ambas">("ambas");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [ownerName, setOwnerName] = useState("");
@@ -245,7 +246,10 @@ export default function Agendar() {
       address: needsAddress ? address.trim() : null,
       date: selectedDate,
       time: selectedTime,
-      notes: notes.trim() || null,
+      notes: [
+        notes.trim(),
+        locationType === "taxipet" ? `TaxiPet: ${taxipetOption === "recoger" ? "solo recoger" : taxipetOption === "regresar" ? "solo regresar" : "recoger y regresar"}` : "",
+      ].filter(Boolean).join(" | ") || null,
     });
 
     setSubmitting(false);
@@ -378,20 +382,52 @@ export default function Agendar() {
             ))}
           </div>
           {needsAddress && (
-            <div className="mt-4">
-              <label className="block font-display text-sm font-semibold text-ink">
-                {locationType === "taxipet"
-                  ? "¿A qué dirección pasamos por tu mascota?"
-                  : "Dirección para la estética móvil"}
-              </label>
-              <input value={address} onChange={(e) => setAddress(e.target.value)}
-                placeholder="Calle, número, número interior, colonia, referencias"
-                className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30" />
+            <div className="mt-4 space-y-4">
+              {/* Opciones de TaxiPet */}
               {locationType === "taxipet" && (
-                <p className="mt-1.5 text-xs text-ink/50">
-                  También podemos regresar a tu mascota a esta misma dirección al terminar. Indícalo en las notas.
-                </p>
+                <div>
+                  <label className="block font-display text-sm font-semibold text-ink mb-2">
+                    ¿Qué necesitas?
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([
+                      { id: "recoger", label: "Solo recoger", emoji: "🏠→🏪" },
+                      { id: "regresar", label: "Solo regresar", emoji: "🏪→🏠" },
+                      { id: "ambas", label: "Recoger y regresar", emoji: "🔄" },
+                    ] as const).map((opt) => (
+                      <button
+                        type="button"
+                        key={opt.id}
+                        onClick={() => setTaxipetOption(opt.id)}
+                        className={`flex flex-col items-center gap-1 rounded-xl border p-3 text-center transition-colors ${
+                          taxipetOption === opt.id
+                            ? "border-mint-deep bg-mint/10"
+                            : "border-ink/10 bg-white hover:border-ink/20"
+                        }`}
+                      >
+                        <span className="text-lg">{opt.emoji}</span>
+                        <span className="font-display text-xs font-bold text-ink leading-tight">{opt.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
+              {/* Dirección */}
+              <div>
+                <label className="block font-display text-sm font-semibold text-ink">
+                  {locationType === "taxipet" ? "Dirección" : "Dirección para la estética móvil"}
+                </label>
+                <input value={address} onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Calle, número, colonia, referencias"
+                  className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30" />
+                {locationType === "taxipet" && (
+                  <p className="mt-1.5 text-xs text-ink/50">
+                    {taxipetOption === "recoger" && "Pasamos por tu mascota y la llevamos al local."}
+                    {taxipetOption === "regresar" && "Tú la llevas al local y nosotros la regresamos a esta dirección."}
+                    {taxipetOption === "ambas" && "Pasamos por tu mascota y la regresamos a esta misma dirección al terminar."}
+                  </p>
+                )}
+              </div>
             </div>
           )}
         </fieldset>
