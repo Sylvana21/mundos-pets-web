@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  /* === Marca Mundogs & Pets === */
+  --color-ink: #161616;          /* negro del logo */
+  --color-mint: #8fd4c1;         /* verde menta del aro */
+  --color-mint-deep: #5fae9b;
+  --color-cream: #faf6ee;        /* fondo cálido */
+  --color-cream-soft: #f1ead9;
+  --color-grape: #6e4fae;        /* morado del paquete MunDogs */
+  --color-grape-deep: #4f3580;
+  --color-lime: #c3e94a;         /* verde lima del paquete */
+  --color-lime-deep: #9bbf2c;
+  --color-paw: #d9c9a8;
+
+  --font-display: "Baloo 2", "Fredoka", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Textura de huellitas muy sutil de fondo */
+.paw-texture {
+  background-image: radial-gradient(var(--color-paw) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
