@@ -21,13 +21,19 @@ function toHHMM(mins: number): string {
   return `${h}:${m}`;
 }
 
+function parseDateLocal(dateStr: string): Date {
+  // Parsea YYYY-MM-DD sin conversión UTC para evitar desfase de día
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 export function isClosedDate(dateStr: string): boolean {
-  const d = new Date(dateStr + "T00:00:00");
+  const d = parseDateLocal(dateStr);
   return WEEKDAY_HOURS[d.getDay()] === null;
 }
 
 export function getDaySlots(dateStr: string): string[] {
-  const d = new Date(dateStr + "T00:00:00");
+  const d = parseDateLocal(dateStr);
   const range = WEEKDAY_HOURS[d.getDay()];
   if (!range) return [];
   const start = toMinutes(range.start);
@@ -52,7 +58,7 @@ export function getUpcomingDays(count = 21) {
   for (let i = 0; i < count; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    const dateStr = d.toISOString().slice(0, 10);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     const label = d.toLocaleDateString("es-MX", {
       weekday: "short",
       day: "numeric",

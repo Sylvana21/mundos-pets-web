@@ -153,6 +153,21 @@ export default function Paquetes() {
           </div>
         </div>
 
+        {/* Foto perrito */}
+        <div className="mt-10 overflow-hidden rounded-3xl shadow-md">
+          <div className="relative h-56 sm:h-72">
+            <img
+              src="/images/gallery/perro1.jpg"
+              alt="Pomerania en la estética Mundogs & Pets"
+              className="h-full w-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent" />
+            <p className="absolute bottom-5 left-6 font-display text-xl font-extrabold text-cream drop-shadow">
+              Peludo feliz, dueño tranquilo 🐾
+            </p>
+          </div>
+        </div>
+
         {/* Perrito deco + Nota cotización */}
         <div className="flex justify-end -mb-2 pr-4">
           <DogDeco variant="sitting" className="h-14 w-12 text-grape/20" />

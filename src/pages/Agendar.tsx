@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  Loader2, MapPin, Truck, Plus, Trash2, PawPrint, Check,
+  Loader2, MapPin, Truck, Car, Plus, Trash2, PawPrint, Check, ArrowRight,
 } from "lucide-react";
 import { SERVICES, PACKAGES, BUSINESS } from "../lib/business";
 import { createAppointment, type PetEntry } from "../lib/appointments";
@@ -11,13 +11,14 @@ import {
 import ServiceIcon from "../components/ServiceIcon";
 import AlfredIcon from "../components/AlfredIcon";
 
-type LocationType = "local" | "movil";
+type LocationType = "local" | "movil" | "taxipet";
 
 const LOCATION_OPTIONS: {
   id: LocationType; label: string; desc: string; icon: typeof MapPin;
 }[] = [
   { id: "local", label: "En el local", desc: "Tú llevas a tu mascota a nuestras instalaciones", icon: MapPin },
   { id: "movil", label: "Estética móvil", desc: "Vamos hasta tu domicilio con la camioneta", icon: Truck },
+  { id: "taxipet", label: "TaxiPet", desc: "Pasamos por tu mascota, la llevamos al local y la regresamos", icon: Car },
 ];
 
 const PET_SIZES = [
@@ -118,16 +119,33 @@ function SuccessScreen({
         <p><strong className="text-ink">Fecha:</strong> {dateLabel} a las {formatSlot12h(selectedTime)}</p>
       </div>
 
-      <a
-        href={`https://wa.me/${BUSINESS.whatsapp.number}?text=${waText}`}
-        target="_blank" rel="noopener noreferrer"
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] py-3.5 font-display text-base font-bold text-white hover:opacity-90"
-      >
-        Confirmar por WhatsApp
-      </a>
+      {/* Botón WhatsApp obligatorio y prominente */}
+      <div className="mt-6 w-full">
+        <div className="mb-2 flex items-center justify-center gap-2">
+          <span className="animate-bounce text-lg">👆</span>
+          <p className="font-display text-sm font-bold text-grape">
+            ¡No olvides confirmar tu cita!
+          </p>
+          <span className="animate-bounce text-lg">👆</span>
+        </div>
+        <a
+          href={`https://wa.me/${BUSINESS.whatsapp.number}?text=${waText}`}
+          target="_blank" rel="noopener noreferrer"
+          className="flex w-full items-center justify-center gap-3 rounded-full bg-[#25D366] py-4 font-display text-base font-bold text-white shadow-lg shadow-green-200 hover:opacity-90 hover:scale-[1.02] transition-transform"
+        >
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.79.47 3.46 1.36 4.92L2 22l5.27-1.39a9.86 9.86 0 0 0 4.77 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.13-2.9-7C17.18 3.03 14.7 2 12.04 2Zm0 1.67c2.23 0 4.33.87 5.9 2.44a8.23 8.23 0 0 1 2.43 5.8c0 4.56-3.72 8.27-8.29 8.27h-.01a8.3 8.3 0 0 1-4.21-1.15l-.3-.18-3.13.82.84-3.04-.2-.31a8.21 8.21 0 0 1-1.27-4.41c0-4.56 3.72-8.24 8.24-8.24Zm-4.6 4.37c-.16 0-.43.06-.65.31-.22.25-.86.84-.86 2.04 0 1.2.88 2.36 1 2.52.13.17 1.71 2.7 4.21 3.69 2.08.83 2.5.66 2.95.62.45-.04 1.46-.6 1.66-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.28-.25-.13-1.46-.72-1.69-.8-.23-.08-.39-.13-.56.13-.16.25-.64.8-.78.97-.15.16-.29.18-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.66-1.25-1.49-1.4-1.74-.15-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.44-.06-.13-.56-1.37-.78-1.87-.2-.49-.41-.42-.56-.43-.14-.01-.31-.01-.47-.01Z" />
+          </svg>
+          Confirmar cita por WhatsApp
+          <ArrowRight className="h-5 w-5" />
+        </a>
+        <p className="mt-2 text-center text-xs text-ink/40">
+          Tu cita queda guardada, pero la estética necesita tu confirmación para apartarte el lugar.
+        </p>
+      </div>
       <button
         onClick={() => navigate("/")}
-        className="mt-3 font-display text-sm font-semibold text-ink/40 hover:text-ink"
+        className="mt-4 font-display text-sm font-semibold text-ink/30 hover:text-ink"
       >
         Volver al inicio
       </button>
@@ -183,7 +201,7 @@ export default function Agendar() {
   function addPet() { setPets((prev) => [...prev, emptyPet()]); }
   function removePet(index: number) { setPets((prev) => prev.filter((_, i) => i !== index)); }
 
-  const needsAddress = locationType === "movil";
+  const needsAddress = locationType === "movil" || locationType === "taxipet";
 
   function validate(): string | null {
     if (pets.length === 0) return "Agrega al menos una mascota.";
@@ -197,7 +215,9 @@ export default function Agendar() {
     if (!ownerName.trim()) return "Falta tu nombre.";
     if (!ownerPhone.trim()) return "Falta tu teléfono.";
     if (needsAddress && !address.trim())
-      return "Falta la dirección para la estética móvil.";
+      return locationType === "taxipet"
+        ? "Falta la dirección para pasar por tu mascota."
+        : "Falta la dirección para la estética móvil.";
     return null;
   }
 
@@ -351,10 +371,19 @@ export default function Agendar() {
           </div>
           {needsAddress && (
             <div className="mt-4">
-              <label className="block font-display text-sm font-semibold text-ink">Dirección</label>
+              <label className="block font-display text-sm font-semibold text-ink">
+                {locationType === "taxipet"
+                  ? "¿A qué dirección pasamos por tu mascota?"
+                  : "Dirección para la estética móvil"}
+              </label>
               <input value={address} onChange={(e) => setAddress(e.target.value)}
-                placeholder="Calle, número, colonia, referencias"
+                placeholder="Calle, número, número interior, colonia, referencias"
                 className="mt-1.5 w-full rounded-xl border border-ink/15 px-4 py-3 text-sm focus:border-mint-deep focus:outline-none focus:ring-2 focus:ring-mint/30" />
+              {locationType === "taxipet" && (
+                <p className="mt-1.5 text-xs text-ink/50">
+                  También podemos regresar a tu mascota a esta misma dirección al terminar. Indícalo en las notas.
+                </p>
+              )}
             </div>
           )}
         </fieldset>
